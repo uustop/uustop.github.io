@@ -77,7 +77,7 @@ layui.use('flow', function(){
       $.getJSON('./long.json', function(res){
         //假设你的列表返回在data集合中
         layui.each(res.records, function(index, item){
-          lis.push('<li class="item"><a title="'+item.videoTitle+'" href="https://www.m3u8play.com/?play=https://wcfang.cn/mediapwa/cn/1.2.3/1/2/3/480/'+ item.videoId +'.m3u8" target="_blank"><img class="itemImg" src="'+ item.videoCover +'"/><div class="itemTitle">【'+ formatTime(item.videoUploadDate,'Y-M-D h:m:s')+ '】【'+item.videoTitle+'】</div></a></li>');
+          lis.push('<li class="item"><a title="'+item.videoTitle+'" href="./play.html?q=https://wcfang.cn/mediapwa/cn/1.2.3/1/2/3/480/'+ item.videoId +'.m3u8" target="_blank"><img class="itemImg" src="'+ item.videoCover +'"/><div class="itemTitle">【'+ formatTime(item.videoUploadDate,'Y-M-D h:m:s')+ '】【'+item.videoTitle+'】</div></a></li>');
         }); 
         
         //执行下一页渲染，第二参数为：满足“加载更多”的条件，即后面仍有分页
