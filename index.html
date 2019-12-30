@@ -1,10 +1,94 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>uustop的博客</title>
+  <meta charset="utf-8">
+  <title>长视频</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="./layui/css/layui.css"  media="all">
+  <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
 </head>
+<style>
+  .item {
+      float: left;
+      width: 375px;
+      position: relative;
+      padding: 0 20px 10px 20px;
+  }
+  .itemTitle {
+      width: 375px;
+      height: 10px;
+  }
+  .itemImg {
+      width: 375px;
+      height: 260px;
+  }
+  </style>
+<script>
+/** 
+ * 时间戳转化为年 月 日 时 分 秒 
+ * number: 传入时间戳 
+ * format：返回格式，支持自定义，但参数必须与formateArr里保持一致 
+*/  
+function formatTime(number,format) {  
+  
+  var formateArr  = ['Y','M','D','h','m','s'];  
+  var returnArr   = [];  
+  
+  var date = new Date(number * 1000);  
+  returnArr.push(date.getFullYear());  
+  returnArr.push(formatNumber(date.getMonth() + 1));  
+  returnArr.push(formatNumber(date.getDate()));  
+  
+  returnArr.push(formatNumber(date.getHours()));  
+  returnArr.push(formatNumber(date.getMinutes()));  
+  returnArr.push(formatNumber(date.getSeconds()));  
+  
+  for (var i in returnArr)  
+  {  
+    format = format.replace(formateArr[i], returnArr[i]);  
+  }  
+  return format;  
+} 
+
+//数据转化  
+function formatNumber(n) {  
+  n = n.toString()  
+  return n[1] ? n : '0' + n  
+}  
+</script>
 <body>
-    <h1>hi</h1>
+<ul id="demo">
+</ul>
+<script src="./layui/layui.js" charset="utf-8"></script>
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+
+<script>
+ 
+layui.use('flow', function(){
+  var $ = layui.jquery; //不用额外加载jQuery，flow模块本身是有依赖jQuery的，直接用即可。
+  var flow = layui.flow;
+  flow.load({
+    elem: '#demo' //指定列表容器
+    ,done: function(page, next){ //到达临界点（默认滚动触发），触发下一页
+      var lis = [];
+      //以jQuery的Ajax请求为例，请求下一页数据（注意：page是从2开始返回）
+      $.getJSON('./long.json', function(res){
+        //假设你的列表返回在data集合中
+        layui.each(res.records, function(index, item){
+          lis.push('<li class="item"><a title="'+item.videoTitle+'" href="https://www.m3u8play.com/?play=https://wcfang.cn/mediapwa/cn/1.2.3/1/2/3/480/'+ item.videoId +'.m3u8" target="_blank"><img class="itemImg" src="'+ item.videoCover +'"/><div class="itemTitle">【'+ formatTime(item.videoUploadDate,'Y-M-D h:m:s')+ '】【'+item.videoTitle+'】</div></a></li>');
+        }); 
+        
+        //执行下一页渲染，第二参数为：满足“加载更多”的条件，即后面仍有分页
+        //pages为Ajax返回的总页数，只有当前页小于总页数的情况下，才会继续出现加载更多
+        next(lis.join(''), page < res.pages);    
+      });
+    }
+  });
+});
+
+</script>
+
 </body>
 </html>
